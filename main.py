@@ -16,9 +16,8 @@ try:
     img_urls.extend([x.strip() for x in img_file.readlines()])
     print(f"Read {len(img_urls)} url(s)")
     img_file.close()
-except:
-    print(f"Cannot read urls from {file_name}")
-    exit()
+except OSError as err:
+    print(f"OS error: {err}")
 
 
 start_time = time.perf_counter()
@@ -27,6 +26,8 @@ start_time = time.perf_counter()
 def download_image(img_url):
     try:
         img_bytes = requests.get(img_url).content
+    except requests.exceptions.RequestException as exp:
+        print(f"Requests error: {exp}")
     except:
         print(f"Can't read the url {img_url}")
     img_name = img_url.split('/')[3]
@@ -35,9 +36,8 @@ def download_image(img_url):
         with open(img_name, 'xb') as img_file:
             img_file.write(img_bytes)
             print(f"{img_name} was downloaded")
-    except:
-        print(
-            f"Cannot create the file {img_name}, It probably already exists")
+    except OSError as err:
+        print(f"OS error: {err}")
 
 
 # Creating threads and using them
@@ -47,4 +47,4 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 end_time = time.perf_counter()
 
-print(f"Finished in {end_time - start_time} seconds")
+print(f"Finished in {round(end_time - start_time, 2)} seconds")
