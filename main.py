@@ -12,14 +12,12 @@ file_name = sys.argv[1]
 img_urls = []
 
 try:
-    with open(file_name, "r") as img_file:
-        urls = img_file.readlines()
-        urls = [x.strip() for x in urls]
-        print(f"Read {len(urls)} urls...")
-        img_urls.extend(urls)
-        img_file.close()
+    img_file = open(file_name, "r")
+    img_urls.extend([x.strip() for x in img_file.readlines()])
+    print(f"Read {len(img_urls)} url(s)")
+    img_file.close()
 except:
-    print("Cannot read urls from file!")
+    print(f"Cannot read urls from {file_name}")
     exit()
 
 
@@ -36,9 +34,10 @@ def download_image(img_url):
     try:
         with open(img_name, 'xb') as img_file:
             img_file.write(img_bytes)
-            print(f"{img_name} was downloaded...")
+            print(f"{img_name} was downloaded")
     except:
-        print(f"Cannot create the file {img_name}")
+        print(
+            f"Cannot create the file {img_name}, It probably already exists")
 
 
 # Creating threads and using them
